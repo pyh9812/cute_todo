@@ -1,30 +1,28 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cute_todo/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('CuteTodoApp renders smoke test', (WidgetTester tester) async {
+    // 앱 빌드 및 첫 프레임 렌더링
+    await tester.pumpWidget(const CuteTodoApp());
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // 상단 앱바 타이틀 확인
+    expect(find.text('귀여운 투두리스트'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // 미완료 / 완료 탭 표시 확인
+    expect(find.textContaining('진행 중'), findsOneWidget);
+    expect(find.textContaining('완료됨'), findsOneWidget);
+
+    // 캐릭터 말풍선 영역 확인
+    expect(find.text('토롱이의 한마디'), findsOneWidget);
+
+    // 할 일 추가 버튼 확인
+    expect(find.text('할 일 추가'), findsOneWidget);
   });
 }
